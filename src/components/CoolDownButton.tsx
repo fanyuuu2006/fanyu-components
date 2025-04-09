@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { CoolDownButtonProps } from "../types/Props";
 
-export const CoolDownButton = ({
-  as = "button",
+export const CoolDownButton = <T extends React.ElementType = "button">({
+  as,
   children,
   style,
   onClick,
@@ -10,8 +10,8 @@ export const CoolDownButton = ({
   enabledStyle,
   disabledStyle,
   ...rest
-}: CoolDownButtonProps) => {
-  const Component = as;
+}: CoolDownButtonProps<T>) => {
+  const Component = as || "button";
   const [isButtonEnabled, setIsButtonEnabled] = useState<boolean>(true);
 
   const currentStyle = {
