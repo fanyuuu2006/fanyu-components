@@ -6,7 +6,7 @@ import { OutsideLinkProps } from "../types/Props";
  * @param {OutsideLinkProps} props
  */
 
-export const OutsideLink: React.FC<OutsideLinkProps> = ({
+export const OutsideLink = ({
   href,
   target = "_blank",
   rel = "noopener noreferrer",

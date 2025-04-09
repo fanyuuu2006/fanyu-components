@@ -1,3 +1,4 @@
 import { OutsideLink } from "./components/OutsideLink";
+import { CoolDownButton } from "./components/CoolDownButton";
 
-export { OutsideLink };
+export { OutsideLink, CoolDownButton };
