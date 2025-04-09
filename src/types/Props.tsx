@@ -9,10 +9,9 @@ export interface CoolDownProps {
   disabledStyle?: React.CSSProperties; // 禁用時的樣式
 }
 
-export type CoolDownButtonProps<T extends React.ElementType> = {
+export type CoolDownButtonProps<T extends React.ElementType> = CoolDownProps & {
   as?: T;
-} & CoolDownProps &
-  OverrideProps<
+} & OverrideProps<
     React.ComponentPropsWithoutRef<T>,
     {
       onClick?: React.ComponentPropsWithoutRef<T>["onClick"];
