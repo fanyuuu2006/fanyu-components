@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { CoolDownButtonProps } from "../types/Props";
 
 /**
@@ -14,8 +14,8 @@ import { CoolDownButtonProps } from "../types/Props";
  * @param {React.ReactNode} props.children - 子元件內容
  * @param {React.CSSProperties} [props.style] - 通用樣式
  * @param {number} [props.coolDownTime=1000] - 冷卻時間 ms，預設為 1000
- * @param {React.CSSProperties} [props.enabledStyle] - 啟用狀態的樣式
- * @param {React.CSSProperties} [props.disabledStyle] - 禁用狀態的樣式
+ * @param {React.CSSProperties} [props.styles.enabledStyle] - 啟用狀態的樣式
+ * @param {React.CSSProperties} [props.styles.disabledStyle] - 禁用狀態的樣式
  * @param {Function} [props.onClick] - 點擊事件處理器
  * @returns {JSX.Element} 冷卻按鈕的 JSX 元素
  */
@@ -23,25 +23,24 @@ export const CoolDownButton = <T extends React.ElementType = "button">({
   as,
   children,
   style,
+  styles,
   onClick,
   coolDownTime = 1000,
-  enabledStyle,
-  disabledStyle,
   ...rest
-}: CoolDownButtonProps<T>) => {
-  const Component = as || "button";
+}: CoolDownButtonProps<T>): React.JSX.Element => {
+  const Component: React.ElementType = as || "button";
   const [isButtonEnabled, setIsButtonEnabled] = useState<boolean>(true);
 
   const currentStyle = {
     padding: "1em 1.5em",
     ...style,
-    ...(isButtonEnabled ? enabledStyle : disabledStyle),
+    ...(isButtonEnabled ? styles?.enabledStyle : styles?.disabledStyle),
   };
 
   return (
     <Component
       disabled={!isButtonEnabled}
-      onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+      onClick={(e: React.MouseEvent<typeof Component>) => {
         setIsButtonEnabled(false);
         onClick?.(e); // 如果有傳入 onClick 函數，則執行它
         setTimeout(() => {
@@ -55,3 +54,5 @@ export const CoolDownButton = <T extends React.ElementType = "button">({
     </Component>
   );
 };
+
+CoolDownButton.displayName = "CoolDownButton";

@@ -27,3 +27,5 @@ export const OutsideLink = ({
     </a>
   );
 };
+
+OutsideLink.displayName = "OutsideLink";
