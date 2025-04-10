@@ -34,7 +34,7 @@ export const CoolDownButton = <T extends React.ElementType = "button">({
   const currentStyle = {
     padding: "1em 1.5em",
     ...style,
-    ...(isButtonEnabled ? styles?.enabledStyle : styles?.disabledStyle),
+    ...(isButtonEnabled ? styles?.enabled : styles?.disabled),
   };
 
   return (

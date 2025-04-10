@@ -11,8 +11,8 @@ export type OutsideLinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement>;
 export interface CoolDownProps {
   coolDownTime?: number; // 冷卻時間
   styles: {
-    enabledStyle?: React.CSSProperties; // 啟用時的樣式
-    disabledStyle?: React.CSSProperties; // 禁用時的樣式
+    enabled?: React.CSSProperties; // 啟用時的樣式
+    disabled?: React.CSSProperties; // 禁用時的樣式
   };
 }
 
