@@ -8,20 +8,23 @@ type AsComponentProps<T extends React.ElementType> = {
   as?: T;
 } & React.ComponentPropsWithoutRef<T>;
 
+export type ButtonStylesProps = {
+  enabled?: React.CSSProperties; // 啟用時的樣式
+  disabled?: React.CSSProperties; // 禁用時的樣式
+  hover?: React.CSSProperties; // 鼠標 hover 時的樣式
+  active?: React.CSSProperties; // 鼠標點擊時的樣式
+};
+
 export type OutsideLinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement>;
 
-export interface CoolDownProps {
-  coolDownTime?: number; // 冷卻時間
-  styles: {
-    enabled?: React.CSSProperties; // 啟用時的樣式
-    disabled?: React.CSSProperties; // 禁用時的樣式
-  };
-}
-
-export type CoolDownButtonProps<T extends React.ElementType> = OverrideProps<
-  AsComponentProps<T>,
-  CoolDownProps
->;
+export type CoolDownButtonProps<T extends React.ElementType = "button"> =
+  OverrideProps<
+    AsComponentProps<T>,
+    {
+      coolDownTime?: number; // 冷卻時間
+      styles: ButtonStylesProps;
+    }
+  >;
 
 export interface ModelContainerProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "onClick"> {

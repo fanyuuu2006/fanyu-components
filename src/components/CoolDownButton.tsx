@@ -14,39 +14,54 @@ import { CoolDownButtonProps } from "../types/Props";
  * @param {React.ReactNode} props.children - 子元件內容
  * @param {React.CSSProperties} [props.style] - 通用樣式
  * @param {number} [props.coolDownTime=1000] - 冷卻時間 ms，預設為 1000
- * @param {React.CSSProperties} [props.styles.enabledStyle] - 啟用狀態的樣式
- * @param {React.CSSProperties} [props.styles.disabledStyle] - 禁用狀態的樣式
+ * @param {React.CSSProperties} [props.styles.enabled] - 啟用狀態的樣式
+ * @param {React.CSSProperties} [props.styles.disabled] - 禁用狀態的樣式
+ * @param {React.CSSProperties} [props.styles.hover] - 滑鼠懸停的樣式
+ * @param {React.CSSProperties} [props.styles.active] - 滑鼠點擊的樣式
  * @param {Function} [props.onClick] - 點擊事件處理器
  * @returns {JSX.Element} 冷卻按鈕的 JSX 元素
  */
-export const CoolDownButton = <T extends React.ElementType = "button">({
-  as,
+export const CoolDownButton = ({
+  as = "button",
   children,
   style,
   styles,
   onClick,
   coolDownTime = 1000,
   ...rest
-}: CoolDownButtonProps<T>): React.JSX.Element => {
-  const Component: React.ElementType = as || "button";
+}: CoolDownButtonProps): React.JSX.Element => {
+  const Component: React.ElementType = as;
   const [isButtonEnabled, setIsButtonEnabled] = useState<boolean>(true);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isActive, setIsActive] = useState(false);
 
-  const currentStyle = {
-    padding: "1em 1.5em",
-    ...style,
-    ...(isButtonEnabled ? styles?.enabled : styles?.disabled),
-  };
+  const currentStyle = Object.assign(
+    {
+      padding: "1em 1.5em",
+    },
+    style,
+    isButtonEnabled ? styles?.enabled : styles?.disabled,
+    isButtonEnabled && isActive ? styles?.active : null,
+    isButtonEnabled && !isActive && isHovered ? styles?.hover : null
+  );
 
   return (
     <Component
       disabled={!isButtonEnabled}
-      onClick={(e: React.MouseEvent<typeof Component>) => {
+      onClick={(e) => {
         setIsButtonEnabled(false);
         onClick?.(e); // 如果有傳入 onClick 函數，則執行它
         setTimeout(() => {
           setIsButtonEnabled(true);
         }, coolDownTime);
       }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        setIsActive(false);
+      }}
+      onMouseDown={() => setIsActive(true)}
+      onMouseUp={() => setIsActive(false)}
       style={currentStyle}
       {...rest}
     >

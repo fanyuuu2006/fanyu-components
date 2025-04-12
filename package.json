@@ -1,6 +1,6 @@
 {
-  "name": "fanyucompopents",
-  "version": "1.2.2",
+  "name": "fanyucomponents",
+  "version": "2.0.3",
   "description": "飯魚的組件",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
