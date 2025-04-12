@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ModelContainerProps } from "../types/Props";
+import { ModelContainerProps } from "../types/ComponentProps";
 import { flexAlignMap } from "../utils/flex";
 import React from "react";
 

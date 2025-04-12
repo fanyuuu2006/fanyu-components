@@ -1,5 +1,5 @@
 import React from "react";
-import { OutsideLinkProps } from "../types/Props";
+import { OutsideLinkProps } from "../types/ComponentProps";
 
 /**
  * 外部連結組件，用於建立帶有安全屬性（如 `rel="noopener noreferrer"`）的超連結。

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CoolDownButtonProps } from "../types/Props";
+import { CoolDownButtonProps } from "../types/ComponentProps";
 
 /**
  * 一個具備冷卻時間的按鈕組件，可用於防止重複點擊事件。
@@ -21,7 +21,7 @@ import { CoolDownButtonProps } from "../types/Props";
  * @param {Function} [props.onClick] - 點擊事件處理器
  * @returns {JSX.Element} 冷卻按鈕的 JSX 元素
  */
-export const CoolDownButton = <T extends React.ElementType = "button">({
+export const CoolDownButton = <Component extends React.ElementType = "button">({
   as,
   children,
   style,
@@ -29,11 +29,12 @@ export const CoolDownButton = <T extends React.ElementType = "button">({
   onClick,
   coolDownTime = 1000,
   ...rest
-}: CoolDownButtonProps<T>): React.JSX.Element => {
+}: CoolDownButtonProps<Component>): React.JSX.Element => {
   const Component: React.ElementType = as || "button";
   const [isButtonEnabled, setIsButtonEnabled] = useState<boolean>(true);
   const [isHovered, setIsHovered] = useState(false);
   const [isActive, setIsActive] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
 
   const currentStyle = Object.assign(
     {
@@ -42,7 +43,8 @@ export const CoolDownButton = <T extends React.ElementType = "button">({
     style,
     isButtonEnabled ? styles?.enabled : styles?.disabled,
     isButtonEnabled && isActive ? styles?.active : null,
-    isButtonEnabled && !isActive && isHovered ? styles?.hover : null
+    isButtonEnabled && isHovered && !isActive ? styles?.hover : null,
+    isButtonEnabled && isFocused ? styles?.focus : null
   );
 
   return (
@@ -62,6 +64,8 @@ export const CoolDownButton = <T extends React.ElementType = "button">({
       }}
       onMouseDown={() => setIsActive(true)}
       onMouseUp={() => setIsActive(false)}
+      onFocus={() => setIsFocused(true)}
+      onBlur={() => setIsFocused(false)}
       style={currentStyle}
       {...rest}
     >
