@@ -6,13 +6,12 @@ export const DownloadButton = ({
   style,
   rel,
   icon,
-  iconPosition = "left", // 👈 預設為左側
+  iconPosition = "left", // 預設為左側
   fileName,
   fileUrl,
   ...rest
 }: DownloadButtonProps) => {
   const [loading, setLoading] = useState(false);
-  const Icon = icon as React.ElementType;
 
   const handleClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (fileName && !fileUrl.startsWith("blob:")) {
@@ -54,9 +53,9 @@ export const DownloadButton = ({
       rel={rel ?? "noopener noreferrer"}
       {...rest}
     >
-      {Icon && iconPosition === "left" && <Icon />}
+      {icon && iconPosition === "left" && icon}
       {loading ? "下載中..." : children}
-      {Icon && iconPosition === "right" && <Icon />}
+      {icon && iconPosition === "right" && icon}
     </a>
   );
 };
