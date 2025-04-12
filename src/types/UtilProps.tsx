@@ -28,3 +28,8 @@ export type flexAlignProps = {
 export type StateStylesProps = Partial<
   Record<stateOption, React.CSSProperties>
 >;
+
+export type IconProps = {
+  icon?: React.ReactNode;
+  iconPosition?: "left" | "right";
+};

@@ -37,9 +37,6 @@ export const CoolDownButton = <Component extends React.ElementType = "button">({
   const [isFocused, setIsFocused] = useState(false);
 
   const currentStyle = Object.assign(
-    {
-      padding: "1em 1.5em",
-    },
     style,
     isButtonEnabled
       ? {
@@ -69,6 +66,7 @@ export const CoolDownButton = <Component extends React.ElementType = "button">({
       onMouseUp={() => setIsActive(false)}
       onFocus={() => setIsFocused(true)}
       onBlur={() => setIsFocused(false)}
+      tabIndex={Component === "button" ? undefined : 0}
       style={currentStyle}
       {...rest}
     >

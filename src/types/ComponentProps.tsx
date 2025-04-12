@@ -1,10 +1,15 @@
+import { OverrideProps } from "../../dist/types/UtilProps";
 import {
   AsComponentProps,
   flexAlignProps,
+  IconProps,
   StateStylesProps,
 } from "./UtilProps";
 
-export type OutsideLinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement>;
+export type OutsideLinkProps = OverrideProps<
+  React.AnchorHTMLAttributes<HTMLAnchorElement>,
+  {}
+>;
 
 export type CoolDownButtonProps<Component extends React.ElementType> =
   AsComponentProps<
@@ -15,10 +20,17 @@ export type CoolDownButtonProps<Component extends React.ElementType> =
     }
   >;
 
-export type ModelContainerProps = Omit<
-  React.HTMLAttributes<HTMLDivElement>,
-  "onClick"
-> &
+export type ModelContainerProps = OverrideProps<
+  Omit<React.HTMLAttributes<HTMLDivElement>, "onClick">,
   flexAlignProps & {
     stopPropagation?: boolean;
-  };
+  }
+>;
+
+export type DownloadButtonProps = OverrideProps<
+  React.AnchorHTMLAttributes<HTMLAnchorElement>,
+  {
+    fileName?: string;
+    fileUrl: string;
+  } & IconProps
+>;
