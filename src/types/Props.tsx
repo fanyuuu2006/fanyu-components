@@ -17,7 +17,7 @@ export type ButtonStylesProps = {
 
 export type OutsideLinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement>;
 
-export type CoolDownButtonProps<T extends React.ElementType = "button"> =
+export type CoolDownButtonProps<T extends React.ElementType> =
   OverrideProps<
     AsComponentProps<T>,
     {

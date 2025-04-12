@@ -21,16 +21,16 @@ import { CoolDownButtonProps } from "../types/Props";
  * @param {Function} [props.onClick] - 點擊事件處理器
  * @returns {JSX.Element} 冷卻按鈕的 JSX 元素
  */
-export const CoolDownButton = ({
-  as = "button",
+export const CoolDownButton = <T extends React.ElementType = "button">({
+  as,
   children,
   style,
   styles,
   onClick,
   coolDownTime = 1000,
   ...rest
-}: CoolDownButtonProps): React.JSX.Element => {
-  const Component: React.ElementType = as;
+}: CoolDownButtonProps<T>): React.JSX.Element => {
+  const Component: React.ElementType = as || "button";
   const [isButtonEnabled, setIsButtonEnabled] = useState<boolean>(true);
   const [isHovered, setIsHovered] = useState(false);
   const [isActive, setIsActive] = useState(false);
@@ -48,7 +48,7 @@ export const CoolDownButton = ({
   return (
     <Component
       disabled={!isButtonEnabled}
-      onClick={(e) => {
+      onClick={(e: React.MouseEvent<typeof Component>) => {
         setIsButtonEnabled(false);
         onClick?.(e); // 如果有傳入 onClick 函數，則執行它
         setTimeout(() => {
