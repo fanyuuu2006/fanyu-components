@@ -11,7 +11,7 @@ import { OutsideLinkProps } from "../types/Props";
  * @param {string} [props.target="_blank"] - 連結開啟方式，預設在新分頁開啟
  * @param {string} [props.rel="noopener noreferrer"] - 防止安全漏洞，預設已設置
  * @param {React.ReactNode} props.children - 超連結內的內容
- * @returns {JSX.Element} 外部連結元素
+ * @returns {React.JSX.Element} 外部連結元素
  */
 
 export const OutsideLink = ({
@@ -20,7 +20,7 @@ export const OutsideLink = ({
   rel = "noopener noreferrer",
   children,
   ...rest
-}: OutsideLinkProps) => {
+}: OutsideLinkProps): React.JSX.Element => {
   return (
     <a {...rest} href={href} target={target} rel={rel}>
       {children ?? href}
