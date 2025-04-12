@@ -1,8 +1,8 @@
-import { OverrideProps } from "../../dist/types/UtilProps";
 import {
   AsComponentProps,
   flexAlignProps,
   IconProps,
+  OverrideProps,
   StateStylesProps,
 } from "./UtilProps";
 
