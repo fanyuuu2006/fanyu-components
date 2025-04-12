@@ -41,10 +41,13 @@ export const CoolDownButton = <Component extends React.ElementType = "button">({
       padding: "1em 1.5em",
     },
     style,
-    isButtonEnabled ? styles?.enabled : styles?.disabled,
-    isButtonEnabled && isActive ? styles?.active : null,
-    isButtonEnabled && isHovered && !isActive ? styles?.hover : null,
-    isButtonEnabled && isFocused ? styles?.focus : null
+    isButtonEnabled
+      ? {
+          ...styles?.enabled,
+          ...(isActive ? styles?.active : isHovered ? styles?.hover : {}),
+          ...(isFocused ? styles?.focus : {}),
+        }
+      : styles?.disabled
   );
 
   return (
