@@ -36,16 +36,16 @@ export const CoolDownButton = <Component extends React.ElementType = "button">({
   const [isActive, setIsActive] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
-  const currentStyle = Object.assign(
-    style,
-    isButtonEnabled
+  const currentStyle = {
+    ...style,
+    ...(isButtonEnabled
       ? {
           ...styles?.enabled,
           ...(isActive ? styles?.active : isHovered ? styles?.hover : {}),
           ...(isFocused ? styles?.focus : {}),
         }
-      : styles?.disabled
-  );
+      : { cursor: "not-allowed", ...styles?.disabled }),
+  };
 
   return (
     <Component
