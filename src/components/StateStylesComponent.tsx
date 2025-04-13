@@ -4,9 +4,9 @@ import { StateStylesComponentProps } from "../types/ComponentProps";
 export const StateStylesComponent = <Component extends React.ElementType>(
   props: StateStylesComponentProps<Component>
 ): React.JSX.Element => {
-  const { as, style, styles, onClick, ...rest } = props;
+  const { as = "div", style, styles, onClick, ...rest } = props;
 
-  const Component = (as || "div") as React.ElementType;
+  const Component = as;
 
   const isEnabled = !("disabled" in rest && rest.disabled);
   const [isHovered, setIsHovered] = useState(false);
