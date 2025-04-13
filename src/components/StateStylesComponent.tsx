@@ -6,7 +6,7 @@ export const StateStylesComponent = <Component extends React.ElementType>(
 ): React.JSX.Element => {
   const { as, style, styles, onClick, ...rest } = props;
 
-  const Component: React.ElementType = as || "div";
+  const Component = (as || "div") as React.ElementType;
 
   const isEnabled = !("disabled" in rest && rest.disabled);
   const [isHovered, setIsHovered] = useState(false);
