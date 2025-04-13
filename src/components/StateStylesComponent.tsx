@@ -28,7 +28,6 @@ export const StateStylesComponent = <Component extends React.ElementType>(
   return (
     <Component
       onClick={(e: React.MouseEvent<HTMLElement>) => {
-        setIsPressed((prev) => !prev);
         onClick?.(e);
       }}
       onMouseEnter={() => setIsHovered(true)}
