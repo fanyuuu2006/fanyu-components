@@ -4,7 +4,19 @@ import { StateStylesComponentProps } from "../types/ComponentProps";
 export const StateStylesComponent = <Component extends React.ElementType>(
   props: StateStylesComponentProps<Component>
 ): React.JSX.Element => {
-  const { as = "div", style, styles, onClick, ...rest } = props;
+  const {
+    as = "div",
+    style,
+    styles,
+    onClick,
+    onPointerEnter,
+    onPointerLeave,
+    onPointerDown,
+    onPointerUp,
+    onFocus,
+    onBlur,
+    ...rest
+  } = props;
 
   const Component = as;
 
@@ -30,15 +42,35 @@ export const StateStylesComponent = <Component extends React.ElementType>(
       onClick={(e: React.MouseEvent<HTMLElement>) => {
         onClick?.(e);
       }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => {
+      onPointerEnter={(e: React.PointerEvent<HTMLElement>) => {
+        setIsHovered(true);
+        onPointerEnter?.(e);
+      }}
+      onPointerLeave={(e: React.PointerEvent<HTMLElement>) => {
         setIsHovered(false);
         setIsPressed(false);
+        onPointerLeave?.(e);
       }}
-      onMouseDown={() => setIsPressed(true)}
-      onMouseUp={() => setIsPressed(false)}
-      onFocus={() => setIsFocused(true)}
-      onBlur={() => setIsFocused(false)}
+      onPointerDown={(e: React.PointerEvent<HTMLElement>) => {
+        e.currentTarget.setPointerCapture(e.pointerId); // 讓 pointerUp 確保會回來
+        setIsPressed(true);
+        onPointerDown?.(e);
+      }}
+      onPointerUp={(e: React.PointerEvent<HTMLElement>) => {
+        if (e.currentTarget.hasPointerCapture?.(e.pointerId)) {
+          e.currentTarget.releasePointerCapture(e.pointerId);
+        }
+        setIsPressed(false);
+        onPointerUp?.(e);
+      }}
+      onFocus={(e: React.FocusEvent<HTMLElement>) => {
+        setIsFocused(true);
+        onFocus?.(e);
+      }}
+      onBlur={(e: React.FocusEvent<HTMLElement>) => {
+        setIsFocused(false);
+        onBlur?.(e);
+      }}
       style={currentStyle}
       {...rest}
     />
