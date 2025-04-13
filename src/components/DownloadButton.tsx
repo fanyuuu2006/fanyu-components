@@ -1,16 +1,18 @@
 import { useState } from "react";
 import { DownloadButtonProps } from "../types/ComponentProps";
 
-export const DownloadButton = ({
-  children,
-  style,
-  rel,
-  icon,
-  iconPosition = "left", // 預設為左側
-  fileName,
-  fileUrl,
-  ...rest
-}: DownloadButtonProps) => {
+export const DownloadButton = (props: DownloadButtonProps) => {
+  const {
+    children,
+    style,
+    rel,
+    icon,
+    iconPosition = "left", // 預設為左側
+    fileName,
+    fileUrl,
+    ...rest
+  } = props;
+  
   const [loading, setLoading] = useState(false);
 
   const handleClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -59,3 +61,5 @@ export const DownloadButton = ({
     </a>
   );
 };
+
+DownloadButton.displayName = DownloadButton;

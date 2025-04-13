@@ -62,6 +62,7 @@ export const useModal = () => {
       </div>
     );
   };
+  Container.displayName = "Modal.Container"
 
   return {
     Open,

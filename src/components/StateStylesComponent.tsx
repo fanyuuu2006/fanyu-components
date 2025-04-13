@@ -3,7 +3,7 @@ import { StateStylesComponentProps } from "../types/ComponentProps";
 
 export const StateStylesComponent = <Component extends React.ElementType>(
   props: StateStylesComponentProps<Component>
-) => {
+): React.JSX.Element => {
   const { as, style, styles, onClick, ...rest } = props;
 
   const Component: React.ElementType = as || "div";
@@ -45,3 +45,5 @@ export const StateStylesComponent = <Component extends React.ElementType>(
     />
   );
 };
+
+StateStylesComponent.displayName = "StateStylesComponent";

@@ -13,14 +13,14 @@ import { OutsideLinkProps } from "../types/ComponentProps";
  * @param {React.ReactNode} props.children - 超連結內的內容
  * @returns {React.JSX.Element} 外部連結元素
  */
-
-export const OutsideLink = ({
-  href,
-  target = "_blank",
-  rel = "noopener noreferrer",
-  children,
-  ...rest
-}: OutsideLinkProps): React.JSX.Element => {
+export const OutsideLink = (props: OutsideLinkProps): React.JSX.Element => {
+  const {
+    href,
+    target = "_blank",
+    rel = "noopener noreferrer",
+    children,
+    ...rest
+  } = props;
   return (
     <a {...rest} href={href} target={target} rel={rel}>
       {children ?? href}
