@@ -68,7 +68,5 @@ export const useModal = () => {
     Close,
     Toggle,
     Container,
-    isShow,
   };
 };
-

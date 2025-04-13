@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { CoolDownButtonProps } from "../types/ComponentProps";
+import { StateStylesComponent } from "./StateStylesComponent";
 
 /**
  * 一個具備冷卻時間的按鈕組件，可用於防止重複點擊事件。
@@ -21,57 +22,25 @@ import { CoolDownButtonProps } from "../types/ComponentProps";
  * @param {Function} [props.onClick] - 點擊事件處理器
  * @returns {JSX.Element} 冷卻按鈕的 JSX 元素
  */
-export const CoolDownButton = <Component extends React.ElementType = "button">({
-  as,
-  children,
-  style,
-  styles,
-  onClick,
-  coolDownTime = 1000,
-  ...rest
-}: CoolDownButtonProps<Component>): React.JSX.Element => {
-  const Component: React.ElementType = as || "button";
+export const CoolDownButton = <Component extends React.ElementType>(
+  props: CoolDownButtonProps<Component>
+): React.JSX.Element => {
+  const { as = "button", onClick, coolDownTime = 1000, ...rest } = props;
   const [isButtonEnabled, setIsButtonEnabled] = useState<boolean>(true);
-  const [isHovered, setIsHovered] = useState(false);
-  const [isActive, setIsActive] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
-
-  const currentStyle = {
-    ...style,
-    ...(isButtonEnabled
-      ? {
-          ...styles?.enabled,
-          ...(isActive ? styles?.active : isHovered ? styles?.hover : {}),
-          ...(isFocused ? styles?.focus : {}),
-        }
-      : { cursor: "not-allowed", ...styles?.disabled }),
-  };
 
   return (
-    <Component
+    <StateStylesComponent
+      as={as}
       disabled={!isButtonEnabled}
-      onClick={(e: React.MouseEvent<typeof Component>) => {
+      onClick={(e: React.MouseEvent<HTMLElement>) => {
         setIsButtonEnabled(false);
         onClick?.(e); // 如果有傳入 onClick 函數，則執行它
         setTimeout(() => {
           setIsButtonEnabled(true);
         }, coolDownTime);
       }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => {
-        setIsHovered(false);
-        setIsActive(false);
-      }}
-      onMouseDown={() => setIsActive(true)}
-      onMouseUp={() => setIsActive(false)}
-      onFocus={() => setIsFocused(true)}
-      onBlur={() => setIsFocused(false)}
-      tabIndex={Component === "button" ? undefined : 0}
-      style={currentStyle}
       {...rest}
-    >
-      {children}
-    </Component>
+    />
   );
 };
 

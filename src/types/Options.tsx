@@ -15,7 +15,6 @@ export const stateOptions = [
   "enabled",
   "disabled",
   "hover",
-  "active",
   "focus",
   "pressed",
 ] as const;

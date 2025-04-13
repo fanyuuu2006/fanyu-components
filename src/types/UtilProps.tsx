@@ -15,10 +15,12 @@ export type AsComponentProps<
 > = OverrideProps<
   React.ComponentPropsWithoutRef<Component>,
   {
+    /** 指定用於渲染的 React 元件（可為任意元件*/
     as?: Component;
   } & PermanentProps
 >;
 
+/** Flex 排版對齊選項 */
 export type flexAlignProps = {
   direction?: directionOption;
   mainAlign?: alignOption;
@@ -29,6 +31,7 @@ export type StateStylesProps = Partial<
   Record<stateOption, React.CSSProperties>
 >;
 
+/** 圖標屬性（包括圖標和位置） */
 export type IconProps = {
   icon?: React.ReactNode;
   iconPosition?: "left" | "right";

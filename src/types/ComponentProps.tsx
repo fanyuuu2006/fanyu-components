@@ -11,15 +11,11 @@ export type OutsideLinkProps = OverrideProps<
   {}
 >;
 
-export type CoolDownButtonProps<Component extends React.ElementType> =
-  AsComponentProps<
-    Component,
-    {
-      coolDownTime?: number;
-      styles: Omit<StateStylesProps, "pressed">;
-    }
-  >;
+export type StateStylesComponentProps<Component extends React.ElementType> =
+  AsComponentProps<Component, { styles?: StateStylesProps }>;
 
+export type CoolDownButtonProps<Component extends React.ElementType> =
+  StateStylesComponentProps<Component> & { coolDownTime?: number };
 export type ModelContainerProps = OverrideProps<
   Omit<React.HTMLAttributes<HTMLDivElement>, "onClick">,
   flexAlignProps & {
