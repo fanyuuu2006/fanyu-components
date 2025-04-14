@@ -8,7 +8,6 @@ export const StateStylesComponent = <Component extends React.ElementType>(
     as = "div",
     style,
     styles,
-    onClick,
     onPointerEnter,
     onPointerLeave,
     onPointerDown,
