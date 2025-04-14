@@ -47,9 +47,7 @@ export const useModal = () => {
         {...rest}
       >
         {stopPropagation
-          ? React.Children.map(children, (child) =>
-              stopPropagation ? withStopPropagation(child) : child
-            )
+          ? React.Children.map(children, (child) => withStopPropagation(child))
           : children}
       </StateStylesComponent>
     );

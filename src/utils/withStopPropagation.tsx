@@ -3,7 +3,7 @@ import React from "react";
 /**
  * 攔截指定的事件並自動 stopPropagation
  * @param child React element
- * @param events 要攔截的事件名稱陣列，如 ['onClick', 'onMouseDown']
+ * @returns React element
  */
 export const withStopPropagation = (
   child: React.ReactNode
@@ -14,14 +14,19 @@ export const withStopPropagation = (
   const oldProps: Record<string, any> =
     (child as React.JSX.Element).props || {};
 
-  Object.keys(oldProps).forEach((key) => {
-    if (key.startsWith("on") && typeof oldProps[key] === "function") {
-      newProps[key] = (e: any) => {
-        e.stopPropagation();
-        oldProps[key]?.(e);
+  for (const [key, value] of Object.entries(
+    (child as React.JSX.Element).props || {}
+  )) {
+    if (key.startsWith("on") && typeof value === "function") {
+      newProps[key] = (...args: any[]) => {
+        const event = args[0];
+        if (event?.stopPropagation instanceof Function) {
+          event.stopPropagation();
+        }
+        value(...args);
       };
     }
-  });
+  }
 
   return React.cloneElement(child, newProps);
 };
