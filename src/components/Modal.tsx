@@ -3,6 +3,7 @@ import { ModelContainerProps } from "../types/ComponentProps";
 import { flexAlignMap } from "../utils/flex";
 import React from "react";
 import { StateStylesComponent } from "./StateStylesComponent";
+import { withStopPropagation } from "../utils/withStopPropagation";
 
 export const useModal = () => {
   const [isShow, setIsShow] = useState<boolean>(false);
@@ -33,7 +34,8 @@ export const useModal = () => {
           inset: 0,
           width: "100vw",
           height: "100vh",
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          backgroundColor: "#000000",
+          opacity: 0.5,
 
           display: "flex",
           flexDirection: direction === "horizon" ? "row" : "column",
@@ -45,20 +47,8 @@ export const useModal = () => {
         {...rest}
       >
         {stopPropagation
-          ? React.Children.map(children, (child: React.ReactNode) =>
-              React.isValidElement(child)
-                ? React.cloneElement(
-                    child as React.ReactElement<
-                      React.HTMLAttributes<HTMLElement>
-                    >,
-                    {
-                      onClick: (e: React.MouseEvent<HTMLElement>) => {
-                        e.stopPropagation();
-                        (child as React.JSX.Element).props?.onClick?.(e);
-                      },
-                    }
-                  )
-                : child
+          ? React.Children.map(children, (child) =>
+              stopPropagation ? withStopPropagation(child) : child
             )
           : children}
       </StateStylesComponent>
