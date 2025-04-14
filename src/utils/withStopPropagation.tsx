@@ -11,9 +11,6 @@ export const withStopPropagation = (
   if (!React.isValidElement(child)) return child;
 
   const newProps: Record<string, any> = {};
-  const oldProps: Record<string, any> =
-    (child as React.JSX.Element).props || {};
-
   for (const [key, value] of Object.entries(
     (child as React.JSX.Element).props || {}
   )) {
@@ -22,6 +19,7 @@ export const withStopPropagation = (
         const event = args[0];
         if (event?.stopPropagation instanceof Function) {
           event.stopPropagation();
+          console.log(key, "有處理到事件冒泡");
         }
         value(...args);
       };

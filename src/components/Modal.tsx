@@ -3,7 +3,6 @@ import { ModelContainerProps } from "../types/ComponentProps";
 import { flexAlignMap } from "../utils/flex";
 import React from "react";
 import { StateStylesComponent } from "./StateStylesComponent";
-import { withStopPropagation } from "../utils/withStopPropagation";
 
 export const useModal = () => {
   const [isShow, setIsShow] = useState<boolean>(false);
@@ -27,15 +26,13 @@ export const useModal = () => {
 
     return (
       <StateStylesComponent
-        as="div"
         style={{
           zIndex: 1080,
           position: "fixed",
           inset: 0,
           width: "100vw",
           height: "100vh",
-          backgroundColor: "#000000",
-          opacity: 0.5,
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
 
           display: "flex",
           flexDirection: direction === "horizon" ? "row" : "column",
@@ -47,7 +44,26 @@ export const useModal = () => {
         {...rest}
       >
         {stopPropagation
-          ? React.Children.map(children, (child) => withStopPropagation(child))
+          ? React.Children.map(children, (child: React.ReactNode) => {
+              if (!React.isValidElement(child)) return child;
+
+              const changedProps: Record<string, any> = {};
+              for (const [key, value] of Object.entries(
+                (child as React.JSX.Element).props || {}
+              )) {
+                if (key.startsWith("on") && typeof value === "function") {
+                  changedProps[key] = (...args: any[]) => {
+                    const event = args[0];
+                    if (event?.stopPropagation instanceof Function) {
+                      event.stopPropagation();
+                    }
+                    value(...args);
+                  };
+                }
+              }
+
+              return React.cloneElement(child, changedProps);
+            })
           : children}
       </StateStylesComponent>
     );
