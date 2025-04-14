@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ModelContainerProps } from "../types/ComponentProps";
 import { flexAlignMap } from "../utils/flex";
 import React from "react";
+import { StateStylesComponent } from "./StateStylesComponent";
 
 export const useModal = () => {
   const [isShow, setIsShow] = useState<boolean>(false);
@@ -23,24 +24,9 @@ export const useModal = () => {
       ...rest
     } = props;
 
-    const clonedChildren = React.Children.map(
-      children,
-      (child: React.ReactNode) =>
-        React.isValidElement(child)
-          ? React.cloneElement(
-              child as React.ReactElement<React.HTMLAttributes<HTMLElement>>,
-              {
-                onClick: (e: React.MouseEvent) => {
-                  if (stopPropagation) e.stopPropagation();
-                  (child as React.JSX.Element).props?.onClick?.(e);
-                },
-              }
-            )
-          : child
-    );
-
     return (
-      <div
+      <StateStylesComponent
+        as="div"
         style={{
           zIndex: 1080,
           position: "fixed",
@@ -58,11 +44,27 @@ export const useModal = () => {
         onClick={Close}
         {...rest}
       >
-        {clonedChildren}
-      </div>
+        {stopPropagation
+          ? React.Children.map(children, (child: React.ReactNode) =>
+              React.isValidElement(child)
+                ? React.cloneElement(
+                    child as React.ReactElement<
+                      React.HTMLAttributes<HTMLElement>
+                    >,
+                    {
+                      onClick: (e: React.MouseEvent<HTMLElement>) => {
+                        e.stopPropagation();
+                        (child as React.JSX.Element).props?.onClick?.(e);
+                      },
+                    }
+                  )
+                : child
+            )
+          : children}
+      </StateStylesComponent>
     );
   };
-  Container.displayName = "Modal.Container"
+  Container.displayName = "Modal.Container";
 
   return {
     Open,

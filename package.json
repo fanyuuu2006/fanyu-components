@@ -1,6 +1,6 @@
 {
   "name": "fanyucomponents",
-  "version": "2.2.7",
+  "version": "2.2.8",
   "description": "一款以 純邏輯為核心、無樣式綁定 的 React 元件套件",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,7 +13,16 @@
     "Component",
     "Modal",
     "Button",
-    "fanyucomponents"
+    "fanyucomponents",
+    "No StyleBind",
+    "Pure Logic",
+    "React Component",
+    "React UI",
+    "React Pure Logic",
+    "React No StyleBind",
+    "React UI Component",
+    "React UI Pure Logic",
+    "React UI No StyleBind"
   ],
   "repository": {
     "type": "git",

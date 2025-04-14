@@ -16,9 +16,9 @@ export type StateStylesComponentProps<Component extends React.ElementType> =
 
 export type CoolDownButtonProps<Component extends React.ElementType> =
   StateStylesComponentProps<Component> & { coolDownTime?: number };
-  
+
 export type ModelContainerProps = OverrideProps<
-  Omit<React.HTMLAttributes<HTMLDivElement>, "onClick">,
+  Omit<StateStylesComponentProps<"div">, "onClick">,
   flexAlignProps & {
     stopPropagation?: boolean;
   }
