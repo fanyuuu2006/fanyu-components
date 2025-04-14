@@ -39,37 +39,35 @@ export const StateStylesComponent = <Component extends React.ElementType>(
 
   return (
     <Component
-      onClick={(e: React.MouseEvent<HTMLElement>) => {
-        onClick?.(e);
-      }}
-      onPointerEnter={(e: React.PointerEvent<HTMLElement>) => {
+      onPointerEnter={(...args: any[]) => {
         setIsHovered(true);
-        onPointerEnter?.(e);
+        onPointerEnter?.(...args);
       }}
-      onPointerLeave={(e: React.PointerEvent<HTMLElement>) => {
+      onPointerLeave={(...args: any[]) => {
         setIsHovered(false);
         setIsPressed(false);
-        onPointerLeave?.(e);
+        onPointerLeave?.(...args);
       }}
-      onPointerDown={(e: React.PointerEvent<HTMLElement>) => {
-        e.currentTarget.setPointerCapture(e.pointerId); // 讓 pointerUp 確保會回來
+      onPointerDown={(...args: any[]) => {
+        args[0].currentTarget.setPointerCapture(args[0].pointerId); // 讓 pointerUp 確保會回來
         setIsPressed(true);
-        onPointerDown?.(e);
+        onPointerDown?.(...args);
       }}
-      onPointerUp={(e: React.PointerEvent<HTMLElement>) => {
-        if (e.currentTarget.hasPointerCapture?.(e.pointerId)) {
-          e.currentTarget.releasePointerCapture(e.pointerId);
+      onPointerUp={(...args: any[]) => {
+        const Event = args[0] as React.PointerEvent<HTMLElement>;
+        if (Event.currentTarget.hasPointerCapture?.(Event.pointerId)) {
+          Event.currentTarget.releasePointerCapture(Event.pointerId);
         }
         setIsPressed(false);
-        onPointerUp?.(e);
+        onPointerUp?.(...args);
       }}
-      onFocus={(e: React.FocusEvent<HTMLElement>) => {
+      onFocus={(...args: any[]) => {
         setIsFocused(true);
-        onFocus?.(e);
+        onFocus?.(...args);
       }}
-      onBlur={(e: React.FocusEvent<HTMLElement>) => {
+      onBlur={(...args: any[]) => {
         setIsFocused(false);
-        onBlur?.(e);
+        onBlur?.(...args);
       }}
       style={currentStyle}
       {...rest}

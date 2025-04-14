@@ -1,8 +1,7 @@
-import { useState } from "react";
-import { ModelContainerProps } from "../types/ComponentProps";
+import React, { useState } from "react";
 import { flexAlignMap } from "../utils/flex";
-import React from "react";
 import {
+  ModelContainerProps,
   onEventHandler,
   onEventHandlerKey,
   onEventHandlerKeys,
@@ -47,42 +46,26 @@ export const useModal = () => {
         onClick={Close}
         {...rest}
       >
-        {React.Children.map(children, (child: React.ReactNode) => {
-          if (!React.isValidElement(child)) return child;
-
-          const changedProps = onEventHandlerKeys.reduce(
-            (
-              props: Record<onEventHandlerKey, onEventHandler>,
-              key: onEventHandlerKey
-            ) => {
-              const originalHandler: onEventHandler = (
-                child as React.JSX.Element
-              ).props[key];
-
-              // 如果原始的事件處理器存在，包裝它並添加 stopPropagation 邏輯
-              if (typeof originalHandler === "function") {
-                props[key] = (...args: any[]) => {
-                  const event = args[0];
-                  if (
-                    event?.stopPropagation instanceof Function &&
-                    stopPropagation
-                  ) {
-                    event.stopPropagation(); // 阻止事件冒泡
-                  }
-                  originalHandler(...args); // 調用原始事件處理器
-                };
-              }
-
-              return props;
-            },
-            {} as Record<onEventHandlerKey, onEventHandler>
-          );
-
-          return React.cloneElement(
-            child as React.ReactElement<React.HTMLAttributes<HTMLElement>>,
-            changedProps
-          );
-        })}
+        {stopPropagation
+          ? React.Children.map(children, (child: React.ReactNode) =>
+              React.isValidElement(child)
+                ? React.cloneElement(child, {
+                    ...onEventHandlerKeys.reduce((newProps, key) => {
+                      const original = (child as React.JSX.Element).props?.[
+                        key
+                      ] as onEventHandler;
+                      newProps[key] = (...args: any[]) => {
+                        const Event = args[0] as React.SyntheticEvent;
+                        if (stopPropagation && Event.stopPropagation)
+                          Event.stopPropagation();
+                        if (typeof original === "function") original(...args);
+                      };
+                      return newProps;
+                    }, {} as Record<onEventHandlerKey, onEventHandler>),
+                  })
+                : child
+            )
+          : children}
       </div>
     );
   };
