@@ -36,3 +36,21 @@ export type IconProps = {
   icon?: React.ReactNode;
   iconPosition?: "left" | "right";
 };
+
+export const onEventHandlerKeys = [
+  "onClick",
+  "onMouseDown",
+  "onMouseUp",
+  "onMouseOver",
+  "onMouseOut",
+  "onMouseMove",
+  "onMouseEnter",
+  "onMouseLeave",
+  "onBlur",
+  "onFocus",
+  "onKeyDown",
+  "onKeyUp",
+] as const;
+
+export type onEventHandlerKey = (typeof onEventHandlerKeys)[number];
+export type onEventHandler = ((...arg: any[]) => void) | undefined;

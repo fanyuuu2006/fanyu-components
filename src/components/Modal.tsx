@@ -2,7 +2,11 @@ import { useState } from "react";
 import { ModelContainerProps } from "../types/ComponentProps";
 import { flexAlignMap } from "../utils/flex";
 import React from "react";
-import { StateStylesComponent } from "./StateStylesComponent";
+import {
+  onEventHandler,
+  onEventHandlerKey,
+  onEventHandlerKeys,
+} from "../types";
 
 export const useModal = () => {
   const [isShow, setIsShow] = useState<boolean>(false);
@@ -25,7 +29,7 @@ export const useModal = () => {
     } = props;
 
     return (
-      <StateStylesComponent
+      <div
         style={{
           zIndex: 1080,
           position: "fixed",
@@ -43,29 +47,43 @@ export const useModal = () => {
         onClick={Close}
         {...rest}
       >
-        {stopPropagation
-          ? React.Children.map(children, (child: React.ReactNode) => {
-              if (!React.isValidElement(child)) return child;
+        {React.Children.map(children, (child: React.ReactNode) => {
+          if (!React.isValidElement(child)) return child;
 
-              const changedProps: Record<string, any> = {};
-              for (const [key, value] of Object.entries(
-                (child as React.JSX.Element).props || {}
-              )) {
-                if (key.startsWith("on") && typeof value === "function") {
-                  changedProps[key] = (...args: any[]) => {
-                    const event = args[0];
-                    if (event?.stopPropagation instanceof Function) {
-                      event.stopPropagation();
-                    }
-                    value(...args);
-                  };
-                }
+          const changedProps = onEventHandlerKeys.reduce(
+            (
+              props: Record<onEventHandlerKey, onEventHandler>,
+              key: onEventHandlerKey
+            ) => {
+              const originalHandler: onEventHandler = (
+                child as React.JSX.Element
+              ).props[key];
+
+              // 如果原始的事件處理器存在，包裝它並添加 stopPropagation 邏輯
+              if (typeof originalHandler === "function") {
+                props[key] = (...args: any[]) => {
+                  const event = args[0];
+                  if (
+                    event?.stopPropagation instanceof Function &&
+                    stopPropagation
+                  ) {
+                    event.stopPropagation(); // 阻止事件冒泡
+                  }
+                  originalHandler(...args); // 調用原始事件處理器
+                };
               }
 
-              return React.cloneElement(child, changedProps);
-            })
-          : children}
-      </StateStylesComponent>
+              return props;
+            },
+            {} as Record<onEventHandlerKey, onEventHandler>
+          );
+
+          return React.cloneElement(
+            child as React.ReactElement<React.HTMLAttributes<HTMLElement>>,
+            changedProps
+          );
+        })}
+      </div>
     );
   };
   Container.displayName = "Modal.Container";
