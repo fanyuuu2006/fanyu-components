@@ -6,6 +6,7 @@ import {
   onEventHandlerKey,
   onEventHandlerKeys,
 } from "../types";
+import { StateStylesComponent } from "./StateStylesComponent";
 
 export const useModal = () => {
   const [isShow, setIsShow] = useState<boolean>(false);
@@ -28,7 +29,8 @@ export const useModal = () => {
     } = props;
 
     return (
-      <div
+      <StateStylesComponent
+        as="div"
         style={{
           zIndex: 1080,
           position: "fixed",
@@ -66,7 +68,7 @@ export const useModal = () => {
                 : child
             )
           : children}
-      </div>
+      </StateStylesComponent>
     );
   };
   Container.displayName = "Modal.Container";
