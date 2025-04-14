@@ -37,7 +37,8 @@ export const useModal = () => {
           inset: 0,
           width: "100vw",
           height: "100vh",
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          backgroundColor: "#000",
+          opacity: "0.5",
 
           display: "flex",
           flexDirection: direction === "horizon" ? "row" : "column",
