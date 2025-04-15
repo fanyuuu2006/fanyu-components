@@ -13,7 +13,7 @@ import { OutsideLinkProps } from "../types/ComponentProps";
  * @param {React.ReactNode} props.children - 超連結內的內容
  * @returns {React.JSX.Element} 外部連結元素
  */
-export const OutsideLink = (props: OutsideLinkProps): React.JSX.Element => {
+export const OutsideLink: React.FC<OutsideLinkProps> = (props: OutsideLinkProps): React.JSX.Element => {
   const {
     href,
     target = "_blank",

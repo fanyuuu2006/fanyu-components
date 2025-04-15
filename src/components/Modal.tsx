@@ -15,7 +15,9 @@ export const useModal = () => {
   const Open = () => setIsShow(true);
   const Close = () => setIsShow(false);
 
-  const Container = (props: ModelContainerProps) => {
+  const Container: React.FC<ModelContainerProps> = (
+    props: ModelContainerProps
+  ) => {
     if (!isShow) return null;
 
     const {

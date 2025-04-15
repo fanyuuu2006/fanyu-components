@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { DownloadButtonProps } from "../types/ComponentProps";
 
-export const DownloadButton = (props: DownloadButtonProps) => {
+export const DownloadButton: React.FC<DownloadButtonProps> = (
+  props: DownloadButtonProps
+) => {
   const {
     children,
     style,
@@ -12,7 +14,7 @@ export const DownloadButton = (props: DownloadButtonProps) => {
     fileUrl,
     ...rest
   } = props;
-  
+
   const [loading, setLoading] = useState(false);
 
   const handleClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -62,4 +64,4 @@ export const DownloadButton = (props: DownloadButtonProps) => {
   );
 };
 
-DownloadButton.displayName = DownloadButton;
+DownloadButton.displayName = "DownloadButton";

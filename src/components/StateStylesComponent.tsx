@@ -17,7 +17,7 @@ export const StateStylesComponent = <Component extends React.ElementType>(
     ...rest
   } = props;
 
-  const Component = as;
+  const Tag = as;
 
   const isEnabled = !("disabled" in rest && rest.disabled);
   const [isHovered, setIsHovered] = useState(false);
@@ -37,7 +37,7 @@ export const StateStylesComponent = <Component extends React.ElementType>(
   };
 
   return (
-    <Component
+    <Tag
       onPointerEnter={(...args: any[]) => {
         setIsHovered(true);
         onPointerEnter?.(...args);
