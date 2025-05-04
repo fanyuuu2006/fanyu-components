@@ -4,7 +4,6 @@ import { CollapseProps } from "../types";
 export const Collapse = <Component extends React.ElementType>({
   as,
   state: show,
-  className,
   style,
   children,
   ...rest
@@ -15,8 +14,8 @@ export const Collapse = <Component extends React.ElementType>({
   return (
     <Tag
       ref={innerRef}
-      className={`overflow-hidden ${className ?? ""}`}
       style={{
+        overflow: "hidden",
         maxHeight: show ? `${innerRef.current?.scrollHeight ?? 0}px` : "0px",
         ...style,
       }}
