@@ -1,7 +1,15 @@
-# Fanyu Components
+<div align="center">
+    <picture>
+      <img alt="icon" src="./public/icon.png" height="128" style="background-color: #fff; border-radius: 100%;">
+    </picture>
+  <h1>Fanyu Components</h1>
 
-[![npm version](https://img.shields.io/npm/v/fanyucomponents.svg)](https://www.npmjs.com/package/fanyucomponents)
-[![license](https://img.shields.io/npm/l/fanyucomponents.svg)](./LICENSE)
+<div style="display: flex; justify-content: center">
+<a href="https://www.npmjs.com/package/fanyucomponents"><img alt="npm version" src="https://img.shields.io/npm/v/fanyucomponents"></a>
+<a href="./LICENSE"><img alt="license" src="https://img.shields.io/npm/l/fanyucomponents.svg"></a></div>
+</div>
+
+---
 
 ✨ Fanyu Components 是一款以 純邏輯為核心、無樣式綁定 的 React 元件套件，專為自由度與擴充性設計。它提供了一些常見的 UI 元件及互動邏輯，並允許開發者完全控制樣式，適用於各種專案與 Design System 的建立。
 
