@@ -1,6 +1,6 @@
 <div align="center">
     <picture>
-      <img alt="icon" src="./public/icon.png" height="128" style="background-color: #fff; border-radius: 100%;">
+      <img alt="icon" src="./public/icon.png" height="128">
     </picture>
   <h1>Fanyu Components</h1>
 
