@@ -31,3 +31,11 @@ export type DownloadButtonProps = OverrideProps<
     fileUrl: string;
   } & IconProps
 >;
+
+export type CollapseProps<Component extends React.ElementType> =
+  AsComponentProps<
+    Component,
+    {
+      state: boolean;
+    }
+  >;
