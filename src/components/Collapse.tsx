@@ -15,9 +15,7 @@ export const Collapse = <Component extends React.ElementType>({
   return (
     <Tag
       ref={innerRef}
-      className={`overflow-hidden ${
-        className ?? ""
-      } transition-[max-height] duration-300`}
+      className={`overflow-hidden ${className ?? ""}`}
       style={{
         maxHeight: show ? `${innerRef.current?.scrollHeight ?? 0}px` : "0px",
         ...style,
