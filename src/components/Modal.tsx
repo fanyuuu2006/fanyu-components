@@ -34,7 +34,7 @@ export const useModal = () => {
       <StateStylesComponent
         as="div"
         style={{
-          zIndex: 1080,
+          zIndex: 9999,
           position: "fixed",
           inset: 0,
           width: "100vw",
