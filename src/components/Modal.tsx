@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import ReactDOM from "react-dom";
 import { flexAlignMap } from "../utils/flex";
 import {
   ModelContainerProps,
@@ -15,9 +16,7 @@ export const useModal = () => {
   const Open = () => setIsShow(true);
   const Close = () => setIsShow(false);
 
-  const Container: React.FC<ModelContainerProps> = (
-    props: ModelContainerProps
-  ) => {
+  const Container = (props: ModelContainerProps) => {
     if (!isShow) return null;
 
     const {
@@ -30,11 +29,11 @@ export const useModal = () => {
       ...rest
     } = props;
 
-    return (
+    const Component = (
       <StateStylesComponent
         as="div"
         style={{
-          zIndex: 9999,
+          zIndex: 6987,
           position: "fixed",
           inset: 0,
           width: "100vw",
@@ -72,7 +71,10 @@ export const useModal = () => {
           : children}
       </StateStylesComponent>
     );
+
+    return ReactDOM.createPortal(Component, document.body);
   };
+
   Container.displayName = "Modal.Container";
 
   return {
