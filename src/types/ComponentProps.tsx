@@ -39,22 +39,24 @@ export type CollapseProps<Component extends React.ElementType> =
       state: boolean;
     }
   >;
-  
-  export type TypeWriterTextProps = OverrideProps<
-    React.HTMLAttributes<HTMLSpanElement>,
-    {
-      /** 文字內容 */
-      children: string;
-      /** 每秒字元輸入數（字元/秒） */
-      speed?: number;
-      /** 開始前延遲 (毫秒) */
-      startDelay?: number;
-      /** 顯示的游標符號 */
-      cursor?: string;
-      /** 游標是否閃爍 */
-      cursorBlink?: boolean;
-      /** 完成時回呼 */
-      onComplete?: () => void;
-    }
-  >;
-  
+
+export type TypeWriterTextProps = OverrideProps<
+  React.HTMLAttributes<HTMLSpanElement>,
+  {
+    /** 要顯示的完整文字內容，將依序逐字顯示 */
+    children: string;
+    /** 每秒輸入的字元數（字元/秒），預設為 20 */
+    speed?: number;
+    /** 開始輸入前的延遲時間（毫秒），預設為 0 */
+    startDelay?: number;
+    /** 是否暫停輸入動畫，為 true 時將停止打字 */
+    pause?: boolean;
+    /** 游標字元，會顯示在文字末端，例如 "|" 或 "_"，預設為 "|" */
+    cursor?: string;
+    /** 游標樣式，自訂 CSS 物件（例如改變顏色、粗細等） */
+    cursorStyle?: React.CSSProperties;
+    /** 當文字輸入完成時觸發的回呼函式（不含 loop 模式的刪除階段） */
+    onComplete?: () => void;
+    /** 當 loop 模式中刪除文字完成後觸發的回呼函式 */
+  }
+>;

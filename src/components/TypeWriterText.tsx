@@ -10,10 +10,11 @@ export const TypeWriterText = React.forwardRef<
       children,
       speed = 20, // 以字元/秒為單位，預設為 20 字/秒
       startDelay = 0,
-      onComplete,
+      pause = false,
       cursor = "|",
-      cursorBlink = true,
       className = "",
+      cursorStyle,
+      onComplete,
       ...rest
     },
     ref
@@ -28,6 +29,7 @@ export const TypeWriterText = React.forwardRef<
     }, [children]);
 
     useEffect(() => {
+      if (pause) return;
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
       // 延遲起始輸入
@@ -56,6 +58,7 @@ export const TypeWriterText = React.forwardRef<
           <span
             style={{
               display: "inline-block",
+              ...cursorStyle,
             }}
           >
             {cursor}
