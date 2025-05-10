@@ -8,63 +8,108 @@ export const TypeWriterText = React.forwardRef<
   (
     {
       children,
-      speed = 20, // 以字元/秒為單位，預設為 20 字/秒
+      speed = 20, // 每秒字元數
       startDelay = 0,
       pause = false,
       cursor = "|",
       className = "",
       cursorStyle,
       onComplete,
+      shouldDelete = false,
+      deleteDelay = 1000,
+      loop = false,
+      onTyping,
       ...rest
     },
     ref
   ) => {
-    const [index, setIndex] = useState(0);
+    const [index, setIndex] = useState<number | null>(null);
+    const [action, setAction] = useState<"typing" | "deleting">("typing");
     const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const isComplete = index === children.length;
 
-    // 每次 children 改變時重置
+    // 當文字變化時重置狀態
     useEffect(() => {
-      setIndex(0);
+      setIndex(null);
     }, [children]);
 
     useEffect(() => {
       if (pause) return;
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      const interval = 1000 / speed;
 
-      // 延遲起始輸入
-      if (index === 0 && startDelay > 0) {
-        timeoutRef.current = setTimeout(() => setIndex(1), startDelay);
-        return () => clearTimeout(timeoutRef.current!);
+      if (index === null) {
+        // 等待指定時間後開始打字
+        const timeout = setTimeout(() => {
+          setIndex(0);
+          setAction("typing");
+        }, startDelay);
+        return;
       }
 
-      // 開始逐字輸入
-      if (!isComplete) {
-        const interval = 1000 / speed;
-        timeoutRef.current = setTimeout(() => {
-          setIndex((prev) => prev + 1);
-        }, interval);
-        return () => clearTimeout(timeoutRef.current!);
+      if (action === "typing") {
+        if (index < children.length) {
+          timeoutRef.current = setTimeout(() => {
+            setIndex((prev) => {
+              const next = (prev ?? -1) + 1;
+              if (onTyping && next < children.length) {
+                onTyping(children[next], next);
+              }
+              return next;
+            });
+          }, interval);
+        } else {
+          if (shouldDelete) {
+            timeoutRef.current = setTimeout(() => {
+              setAction("deleting");
+            }, deleteDelay);
+          } else {
+            onComplete?.();
+          }
+        }
       }
 
-      // 完成後執行 callback
-      onComplete?.();
-    }, [children, index, speed, startDelay, onComplete, isComplete]);
+      if (action === "deleting") {
+        if (index > 0) {
+          timeoutRef.current = setTimeout(() => {
+            setIndex((prev) => (prev ?? 1) - 1);
+          }, interval);
+        } else {
+          if (loop) {
+            setAction("typing");
+            setIndex(0);
+          } else {
+            onComplete?.();
+          }
+        }
+      }
+
+      return () => {
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      };
+    }, [
+      index,
+      action,
+      children,
+      speed,
+      pause,
+      startDelay,
+      deleteDelay,
+      shouldDelete,
+      loop,
+      onTyping,
+      onComplete,
+    ]);
 
     return (
-      <span ref={ref} className={className} {...rest}>
-        {children.slice(0, index)}
-        {!isComplete && (
-          <span
-            style={{
-              display: "inline-block",
-              ...cursorStyle,
-            }}
-          >
-            {cursor}
-          </span>
-        )}
-      </span>
+      index && (
+        <span ref={ref} className={className} {...rest}>
+          {children.slice(0, index)}
+          {(index !== 0 || index || children.length) && (
+            <span style={{ display: "inline-block", ...cursorStyle }}>
+              {cursor}
+            </span>
+          )}
+        </span>
+      )
     );
   }
 );
