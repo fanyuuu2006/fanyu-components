@@ -51,7 +51,7 @@ export const TypeWriterText = React.forwardRef<
             setIndex((prev) => {
               const next = (prev ?? -1) + 1;
               if (onTyping && next < children.length) {
-                onTyping(children[next], next);
+                onTyping(children[next-1], next-1);
               }
               return next;
             });
