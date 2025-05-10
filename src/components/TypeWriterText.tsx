@@ -48,13 +48,7 @@ export const TypeWriterText = React.forwardRef<
       if (action === "typing") {
         if (index < children.length) {
           timeoutRef.current = setTimeout(() => {
-            setIndex((prev) => {
-              const next = (prev ?? -1) + 1;
-              if (onTyping && next < children.length) {
-                onTyping(children[next-1], next-1);
-              }
-              return next;
-            });
+            setIndex((prev) => (prev ?? -1) + 1);
           }, interval);
         } else {
           if (shouldDelete) {
@@ -97,6 +91,17 @@ export const TypeWriterText = React.forwardRef<
       onTyping,
       onComplete,
     ]);
+    
+    useEffect(() => {
+      if (
+        index !== null &&
+        action === "typing" &&
+        index < children.length &&
+        onTyping
+      ) {
+        onTyping(children[index], index);
+      }
+    }, [index, action, children, onTyping]);
 
     return (
       <span ref={ref} className={className} {...rest}>
