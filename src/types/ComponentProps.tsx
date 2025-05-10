@@ -39,3 +39,22 @@ export type CollapseProps<Component extends React.ElementType> =
       state: boolean;
     }
   >;
+  
+  export type TypeWriterTextProps = OverrideProps<
+    React.HTMLAttributes<HTMLSpanElement>,
+    {
+      /** 文字內容 */
+      children: string;
+      /** 每秒字元輸入數（字元/秒） */
+      speed?: number;
+      /** 開始前延遲 (毫秒) */
+      startDelay?: number;
+      /** 顯示的游標符號 */
+      cursor?: string;
+      /** 游標是否閃爍 */
+      cursorBlink?: boolean;
+      /** 完成時回呼 */
+      onComplete?: () => void;
+    }
+  >;
+  
