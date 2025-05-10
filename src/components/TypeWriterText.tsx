@@ -38,7 +38,7 @@ export const TypeWriterText = React.forwardRef<
 
       if (index === null) {
         // 等待指定時間後開始打字
-        const timeout = setTimeout(() => {
+        timeoutRef.current = setTimeout(() => {
           setIndex(0);
           setAction("typing");
         }, startDelay);
@@ -74,8 +74,7 @@ export const TypeWriterText = React.forwardRef<
           }, interval);
         } else {
           if (loop) {
-            setAction("typing");
-            setIndex(0);
+            setIndex(null);
           } else {
             onComplete?.();
           }
@@ -100,16 +99,17 @@ export const TypeWriterText = React.forwardRef<
     ]);
 
     return (
-      index && (
-        <span ref={ref} className={className} {...rest}>
-          {children.slice(0, index)}
-          {(index !== 0 || index || children.length) && (
-            <span style={{ display: "inline-block", ...cursorStyle }}>
-              {cursor}
-            </span>
-          )}
-        </span>
-      )
+      <span ref={ref} className={className} {...rest}>
+        {children.slice(0, index ?? 0)}
+        {!(
+          (action === "typing" && index === children.length) ||
+          (action === "deleting" && index === 0)
+        ) && (
+          <span style={{ display: "inline-block", ...cursorStyle }}>
+            {cursor}
+          </span>
+        )}
+      </span>
     );
   }
 );
