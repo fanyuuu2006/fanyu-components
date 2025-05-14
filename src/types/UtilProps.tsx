@@ -55,6 +55,7 @@ export const onEventHandlerKeys = [
   "onFocus",
   "onKeyDown",
   "onKeyUp",
+  "onWheel"
 ] as const;
 
 export type onEventHandlerKey = (typeof onEventHandlerKeys)[number];
