@@ -47,7 +47,7 @@ export const useModal = () => {
           modalRef.current.contains(e.target as Node)
         ) {
           e.preventDefault();
-          const delta = e.deltaY > 0 ? -0.05 : 0.05;
+          const delta = e.deltaY > 0 ? -0.2 : 0.2;
           throttledScale(delta);
 
           const rect = modalRef.current.getBoundingClientRect();
@@ -79,9 +79,6 @@ export const useModal = () => {
       flexDirection: direction === "horizon" ? "row" : "column",
       alignItems: flexAlignMap.cross[crossAlign],
       justifyContent: flexAlignMap.main[mainAlign],
-      transform: `scale(${scale})`, // 應用縮放
-      transition: "transform 0.2s ease", // 加入過渡效果
-      transformOrigin,
     };
 
     useEffect(() => {
@@ -96,32 +93,40 @@ export const useModal = () => {
 
     const Component = (
       <StateStylesComponent
-        ref={modalRef}
         as="div"
         style={Object.assign({}, baseStyle, style)}
         onClick={Close}
         {...rest}
       >
-        {stopPropagation
-          ? React.Children.map(children, (child: React.ReactNode) =>
-              React.isValidElement(child)
-                ? React.cloneElement(child, {
-                    ...onEventHandlerKeys.reduce((newProps, key) => {
-                      const original = (child as React.JSX.Element).props?.[
-                        key
-                      ] as onEventHandler;
-                      newProps[key] = (...args: any[]) => {
-                        const Event = args[0] as React.SyntheticEvent;
-                        if (stopPropagation && Event.stopPropagation)
-                          Event.stopPropagation();
-                        if (typeof original === "function") original(...args);
-                      };
-                      return newProps;
-                    }, {} as Record<onEventHandlerKey, onEventHandler>),
-                  })
-                : child
-            )
-          : children}
+        <div
+          ref={modalRef}
+          style={{
+            transform: `scale(${scale})`,
+            transformOrigin,
+            transition: "transform 0.2s ease",
+          }}
+        >
+          {stopPropagation
+            ? React.Children.map(children, (child: React.ReactNode) =>
+                React.isValidElement(child)
+                  ? React.cloneElement(child, {
+                      ...onEventHandlerKeys.reduce((newProps, key) => {
+                        const original = (child as React.JSX.Element).props?.[
+                          key
+                        ] as onEventHandler;
+                        newProps[key] = (...args: any[]) => {
+                          const Event = args[0] as React.SyntheticEvent;
+                          if (stopPropagation && Event.stopPropagation)
+                            Event.stopPropagation();
+                          if (typeof original === "function") original(...args);
+                        };
+                        return newProps;
+                      }, {} as Record<onEventHandlerKey, onEventHandler>),
+                    })
+                  : child
+              )
+            : children}
+        </div>
       </StateStylesComponent>
     );
 
