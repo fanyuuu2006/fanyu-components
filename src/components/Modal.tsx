@@ -15,7 +15,6 @@ export const useModal = () => {
   const Open = () => setIsShow(true);
   const Close = () => setIsShow(false);
 
-
   const Container = (props: ModalContainerProps) => {
     if (!isShow) return null;
 
@@ -30,6 +29,24 @@ export const useModal = () => {
       ...rest
     } = props;
 
+    const [scale, setScale] = useState(1);
+
+    useEffect(() => {
+      const handleWheel = (e: WheelEvent) => {
+        if (e.ctrlKey) {
+          e.preventDefault();
+          setScale((prev) => prev + e.deltaY);
+        }
+      };
+
+      document.addEventListener("wheel", handleWheel, {
+        passive: false,
+      });
+      return () => {
+        document.removeEventListener("wheel", handleWheel);
+      };
+    }, []);
+
     const baseStyle = {
       zIndex: 6987,
       position: "fixed",
@@ -41,6 +58,8 @@ export const useModal = () => {
       flexDirection: direction === "horizon" ? "row" : "column",
       alignItems: flexAlignMap.cross[crossAlign],
       justifyContent: flexAlignMap.main[mainAlign],
+      transform: `scale(${scale})`,
+      transition: "transform 0.2s ease",
     };
 
     useEffect(() => {
