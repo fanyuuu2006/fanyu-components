@@ -1,4 +1,4 @@
-import { Component, useRef } from "react";
+import { useRef } from "react";
 import { CollapseProps } from "../types";
 
 export const Collapse = <Component extends React.ElementType>({

@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { flexAlignMap } from "../utils/flex";
 import {
-  ModelContainerProps,
+  ModalContainerProps,
   onEventHandler,
   onEventHandlerKey,
   onEventHandlerKeys,
@@ -11,12 +11,12 @@ import { StateStylesComponent } from "./StateStylesComponent";
 
 export const useModal = () => {
   const [isShow, setIsShow] = useState<boolean>(false);
-
   const Toggle = () => setIsShow((prev) => !prev);
   const Open = () => setIsShow(true);
   const Close = () => setIsShow(false);
 
-  const Container = (props: ModelContainerProps) => {
+
+  const Container = (props: ModalContainerProps) => {
     if (!isShow) return null;
 
     const {
@@ -24,28 +24,39 @@ export const useModal = () => {
       mainAlign = "center",
       crossAlign = "center",
       stopPropagation = true,
+      backgroundScroll = false,
       children,
       style,
       ...rest
     } = props;
 
+    const baseStyle = {
+      zIndex: 6987,
+      position: "fixed",
+      inset: 0,
+      width: "100vw",
+      height: "100vh",
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      display: "flex",
+      flexDirection: direction === "horizon" ? "row" : "column",
+      alignItems: flexAlignMap.cross[crossAlign],
+      justifyContent: flexAlignMap.main[mainAlign],
+    };
+
+    useEffect(() => {
+      if (isShow && !backgroundScroll) {
+        const original = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        return () => {
+          document.body.style.overflow = original;
+        };
+      }
+    }, [isShow, backgroundScroll]);
+
     const Component = (
       <StateStylesComponent
         as="div"
-        style={{
-          zIndex: 6987,
-          position: "fixed",
-          inset: 0,
-          width: "100vw",
-          height: "100vh",
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-
-          display: "flex",
-          flexDirection: direction === "horizon" ? "row" : "column",
-          alignItems: flexAlignMap.cross[crossAlign],
-          justifyContent: flexAlignMap.main[mainAlign],
-          ...style,
-        }}
+        style={Object.assign({}, baseStyle, style)}
         onClick={Close}
         {...rest}
       >
