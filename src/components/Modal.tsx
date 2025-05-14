@@ -37,7 +37,10 @@ export const useModal = () => {
 
     useEffect(() => {
       const throttledScale = _.throttle((delta: number) => {
-        setScale((prev) => prev + delta);
+        setScale((prev) => {
+          const next = Math.max(prev + delta, 0.5); // 限制縮放範圍
+          return next;
+        });
       }, 100);
 
       const handleWheel = (e: WheelEvent) => {
@@ -95,7 +98,9 @@ export const useModal = () => {
       <StateStylesComponent
         as="div"
         style={Object.assign({}, baseStyle, style)}
-        onClick={Close}
+        onClick={(e) => {
+          if (e.target === e.currentTarget || !stopPropagation) Close();
+        }}
         {...rest}
       >
         <div
@@ -106,26 +111,7 @@ export const useModal = () => {
             transition: "transform 0.2s ease",
           }}
         >
-          {stopPropagation
-            ? React.Children.map(children, (child: React.ReactNode) =>
-                React.isValidElement(child)
-                  ? React.cloneElement(child, {
-                      ...onEventHandlerKeys.reduce((newProps, key) => {
-                        const original = (child as React.JSX.Element).props?.[
-                          key
-                        ] as onEventHandler;
-                        newProps[key] = (...args: any[]) => {
-                          const Event = args[0] as React.SyntheticEvent;
-                          if (stopPropagation && Event.stopPropagation)
-                            Event.stopPropagation();
-                          if (typeof original === "function") original(...args);
-                        };
-                        return newProps;
-                      }, {} as Record<onEventHandlerKey, onEventHandler>),
-                    })
-                  : child
-              )
-            : children}
+          {children}
         </div>
       </StateStylesComponent>
     );
