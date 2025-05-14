@@ -50,7 +50,7 @@ export const useModal = () => {
           modalRef.current.contains(e.target as Node)
         ) {
           e.preventDefault();
-          const delta = e.deltaY > 0 ? -0.2 : 0.2;
+          const delta = e.deltaY > 0 ? -0.4 : 0.4;
           throttledScale(delta);
 
           const rect = modalRef.current.getBoundingClientRect();
@@ -98,9 +98,7 @@ export const useModal = () => {
       <StateStylesComponent
         as="div"
         style={Object.assign({}, baseStyle, style)}
-        onClick={(e) => {
-          if (e.target === e.currentTarget || !stopPropagation) Close();
-        }}
+        onClick={Close}
         {...rest}
       >
         <div
@@ -111,7 +109,26 @@ export const useModal = () => {
             transition: "transform 0.2s ease",
           }}
         >
-          {children}
+          {stopPropagation
+            ? React.Children.map(children, (child: React.ReactNode) =>
+                React.isValidElement(child)
+                  ? React.cloneElement(child, {
+                      ...onEventHandlerKeys.reduce((newProps, key) => {
+                        const original = (child as React.JSX.Element).props?.[
+                          key
+                        ] as onEventHandler;
+                        newProps[key] = (...args: any[]) => {
+                          const Event = args[0] as React.SyntheticEvent;
+                          if (stopPropagation && Event.stopPropagation)
+                            Event.stopPropagation();
+                          if (typeof original === "function") original(...args);
+                        };
+                        return newProps;
+                      }, {} as Record<onEventHandlerKey, onEventHandler>),
+                    })
+                  : child
+              )
+            : children}
         </div>
       </StateStylesComponent>
     );
