@@ -1,6 +1,6 @@
 {
   "name": "fanyucomponents",
-  "version": "2.5.3",
+  "version": "2.5.4",
   "description": "一款以 純邏輯為核心、無樣式綁定 的 React 元件套件",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -33,10 +33,12 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
+    "lodash": "^4.17.21",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
+    "@types/lodash": "^4.17.16",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.2",
     "typescript": "^5.8.3"

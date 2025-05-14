@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { flexAlignMap } from "../utils/flex";
 import {
@@ -8,6 +8,7 @@ import {
   onEventHandlerKeys,
 } from "../types";
 import { StateStylesComponent } from "./StateStylesComponent";
+import * as _ from "lodash";
 
 export const useModal = () => {
   const [isShow, setIsShow] = useState<boolean>(false);
@@ -29,6 +30,44 @@ export const useModal = () => {
       ...rest
     } = props;
 
+    const [scale, setScale] = useState(1);
+    const modalRef = useRef<HTMLDivElement>(null);
+    const [transformOrigin, setTransformOrigin] =
+      useState<React.CSSProperties["transformOrigin"]>("center center");
+
+    useEffect(() => {
+      const throttledScale = _.throttle((delta: number) => {
+        setScale((prev) => prev + delta);
+      }, 100);
+
+      const handleWheel = (e: WheelEvent) => {
+        if (
+          e.ctrlKey &&
+          modalRef.current &&
+          modalRef.current.contains(e.target as Node)
+        ) {
+          e.preventDefault();
+          const delta = e.deltaY > 0 ? -0.05 : 0.05;
+          throttledScale(delta);
+
+          const rect = modalRef.current.getBoundingClientRect();
+          const offsetX = e.clientX - rect.left;
+          const offsetY = e.clientY - rect.top;
+          const x = offsetX / rect.width;
+          const y = offsetY / rect.height;
+          setTransformOrigin(`${x * 100}% ${y * 100}%`);
+        }
+      };
+
+      document.addEventListener("wheel", handleWheel, {
+        passive: false,
+      });
+      return () => {
+        document.removeEventListener("wheel", handleWheel);
+        throttledScale.cancel(); // 清除 throttle 定時器
+      };
+    }, []);
+
     const baseStyle = {
       zIndex: 6987,
       position: "fixed",
@@ -40,6 +79,9 @@ export const useModal = () => {
       flexDirection: direction === "horizon" ? "row" : "column",
       alignItems: flexAlignMap.cross[crossAlign],
       justifyContent: flexAlignMap.main[mainAlign],
+      transform: `scale(${scale})`, // 應用縮放
+      transition: "transform 0.2s ease", // 加入過渡效果
+      transformOrigin,
     };
 
     useEffect(() => {
@@ -54,6 +96,7 @@ export const useModal = () => {
 
     const Component = (
       <StateStylesComponent
+        ref={modalRef}
         as="div"
         style={Object.assign({}, baseStyle, style)}
         onClick={Close}
