@@ -12,9 +12,18 @@ import * as _ from "lodash";
 
 export const useModal = () => {
   const [isShow, setIsShow] = useState<boolean>(false);
+  const [scale, setScale] = useState(1);
+
+  const [transformOrigin, setTransformOrigin] =
+    useState<React.CSSProperties["transformOrigin"]>("center center");
+
   const Toggle = () => setIsShow((prev) => !prev);
   const Open = () => setIsShow(true);
   const Close = () => setIsShow(false);
+  const Reset = () => {
+    setScale(1);
+    setTransformOrigin("center center");
+  };
 
   const Container = (props: ModalContainerProps) => {
     if (!isShow) return null;
@@ -30,11 +39,7 @@ export const useModal = () => {
       ...rest
     } = props;
 
-    const [scale, setScale] = useState(1);
     const modalRef = useRef<HTMLDivElement>(null);
-    const [transformOrigin, setTransformOrigin] =
-      useState<React.CSSProperties["transformOrigin"]>("center center");
-
     useEffect(() => {
       const throttledScale = _.throttle((delta: number) => {
         setScale((prev) => {
@@ -50,7 +55,7 @@ export const useModal = () => {
           modalRef.current.contains(e.target as Node)
         ) {
           e.preventDefault();
-          const delta = e.deltaY > 0 ? -0.4 : 0.4;
+          const delta = e.deltaY > 0 ? -0.7 : 0.4;
           throttledScale(delta);
 
           const rect = modalRef.current.getBoundingClientRect();
@@ -142,6 +147,7 @@ export const useModal = () => {
     Open,
     Close,
     Toggle,
+    Reset,
     Container,
   };
 };
