@@ -99,51 +99,65 @@ export const useModal = () => {
       }
     }, [isShow, backgroundScroll]);
 
-    const Component = (
+    const stopPropgationChildren = stopPropagation
+      ? React.Children.map(children, (child: React.ReactNode) =>
+          React.isValidElement(child)
+            ? React.cloneElement(child, {
+                ...onEventHandlerKeys.reduce((newProps, key) => {
+                  const original = (child as React.JSX.Element).props?.[
+                    key
+                  ] as onEventHandler;
+                  newProps[key] = (...args: any[]) => {
+                    const Event = args[0] as React.SyntheticEvent;
+                    if (stopPropagation && Event.stopPropagation)
+                      Event.stopPropagation();
+                    if (typeof original === "function") original(...args);
+                  };
+                  return newProps;
+                }, {} as Record<onEventHandlerKey, onEventHandler>),
+              })
+            : child
+        )
+      : children;
+
+    const scaledChildren = React.isValidElement(stopPropgationChildren)
+      ? (() => {
+          const element = stopPropgationChildren as React.JSX.Element;
+
+          const style = {
+            transform: `scale(${scale})`,
+            transformOrigin,
+            transition: "transform 0.2s ease",
+            ...(element.props.style || {}),
+          };
+
+          // 只在是 DOM 元素時加上 ref
+          const isDOMElement = typeof element.type === "string";
+
+          return React.cloneElement(element, {
+            ...(isDOMElement ? { ref: modalRef } : {}),
+            style,
+          });
+        })()
+      : stopPropgationChildren;
+
+    return ReactDOM.createPortal(
       <StateStylesComponent
         as="div"
         style={Object.assign({}, baseStyle, style)}
         onClick={Close}
         {...rest}
       >
-        <div
-          ref={modalRef}
-          style={{
-            transform: `scale(${scale})`,
-            transformOrigin,
-            transition: "transform 0.2s ease",
-          }}
-        >
-          {stopPropagation
-            ? React.Children.map(children, (child: React.ReactNode) =>
-                React.isValidElement(child)
-                  ? React.cloneElement(child, {
-                      ...onEventHandlerKeys.reduce((newProps, key) => {
-                        const original = (child as React.JSX.Element).props?.[
-                          key
-                        ] as onEventHandler;
-                        newProps[key] = (...args: any[]) => {
-                          const Event = args[0] as React.SyntheticEvent;
-                          if (stopPropagation && Event.stopPropagation)
-                            Event.stopPropagation();
-                          if (typeof original === "function") original(...args);
-                        };
-                        return newProps;
-                      }, {} as Record<onEventHandlerKey, onEventHandler>),
-                    })
-                  : child
-              )
-            : children}
-        </div>
-      </StateStylesComponent>
+        {scaledChildren}
+      </StateStylesComponent>,
+      document.body
     );
-
-    return ReactDOM.createPortal(Component, document.body);
   };
 
   Container.displayName = "Modal.Container";
 
   return {
+    isShow,
     Open,
     Close,
     Toggle,

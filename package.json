@@ -1,6 +1,6 @@
 {
   "name": "fanyucomponents",
-  "version": "2.5.8",
+  "version": "2.6.0",
   "description": "一款以 純邏輯為核心、無樣式綁定 的 React 元件套件",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
