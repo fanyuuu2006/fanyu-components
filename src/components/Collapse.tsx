@@ -14,13 +14,30 @@ export const Collapse = <Component extends React.ElementType>({
     useState<React.CSSProperties["maxHeight"]>("0px");
 
   useEffect(() => {
-    if (show && innerRef.current) {
-      const height = innerRef.current.scrollHeight;
-      setMaxHeight(`${height}px`);
-    } else {
-      setMaxHeight("0px");
-    }
-  }, [show, children]);
+    const el = innerRef.current;
+    if (!el) return;
+
+    const updateHeight = () => {
+      if (show) {
+        setMaxHeight(`${el.scrollHeight}px`);
+      } else {
+        setMaxHeight("0px");
+      }
+    };
+
+    // 初次執行
+    updateHeight();
+
+    // 監聽內容變化
+    const resizeObserver = new ResizeObserver(() => {
+      updateHeight();
+    });
+    resizeObserver.observe(el);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [show]);
 
   return (
     <Tag
