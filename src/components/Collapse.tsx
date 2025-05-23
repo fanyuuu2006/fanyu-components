@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CollapseProps } from "../types";
 
 export const Collapse = <Component extends React.ElementType>({
@@ -10,13 +10,24 @@ export const Collapse = <Component extends React.ElementType>({
 }: CollapseProps<Component>) => {
   const Tag = as ?? "div";
   const innerRef = useRef<HTMLDivElement>(null);
+  const [maxHeight, setMaxHeight] =
+    useState<React.CSSProperties["maxHeight"]>("0px");
+
+  useEffect(() => {
+    if (show && innerRef.current) {
+      const height = innerRef.current.scrollHeight;
+      setMaxHeight(`${height}px`);
+    } else {
+      setMaxHeight("0px");
+    }
+  }, [show, children]);
 
   return (
     <Tag
       ref={innerRef}
       style={{
         overflow: "hidden",
-        maxHeight: show ? `${innerRef.current?.scrollHeight ?? 0}px` : "0px",
+        maxHeight,
         ...style,
       }}
       {...rest}
