@@ -19,7 +19,9 @@ export type CoolDownButtonProps<Component extends React.ElementType> =
 
 export type ModalContainerProps = OverrideProps<
   Omit<StateStylesComponentProps<"div">, "onClick">,
-  flexAlignProps
+  flexAlignProps & {
+    stopPropagation?: boolean;
+  }
 >;
 
 export type DownloadButtonProps = OverrideProps<

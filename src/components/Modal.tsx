@@ -1,7 +1,12 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { flexAlignMap } from "../utils/flex";
-import { ModalContainerProps } from "../types";
+import {
+  ModalContainerProps,
+  onEventHandler,
+  onEventHandlerKey,
+  onEventHandlerKeys,
+} from "../types";
 import { StateStylesComponent } from "./StateStylesComponent";
 
 export const useModal = () => {
@@ -18,6 +23,7 @@ export const useModal = () => {
       direction = "vertical",
       mainAlign = "center",
       crossAlign = "center",
+      stopPropagation = true,
       children,
       style,
       ...rest
@@ -40,14 +46,29 @@ export const useModal = () => {
           justifyContent: flexAlignMap.main[mainAlign],
           ...style,
         }}
-        onClick={(e) => {
-          if (e.target === e.currentTarget) {
-            Close();
-          }
-        }}
+        onClick={Close}
         {...rest}
       >
-        {children}
+        {stopPropagation
+          ? React.Children.map(children, (child: React.ReactNode) =>
+              React.isValidElement(child)
+                ? React.cloneElement(child, {
+                    ...onEventHandlerKeys.reduce((newProps, key) => {
+                      const original = (child as React.JSX.Element).props?.[
+                        key
+                      ] as onEventHandler;
+                      newProps[key] = (...args: any[]) => {
+                        const Event = args[0] as React.SyntheticEvent;
+                        if (stopPropagation && Event.stopPropagation)
+                          Event.stopPropagation();
+                        if (typeof original === "function") original(...args);
+                      };
+                      return newProps;
+                    }, {} as Record<onEventHandlerKey, onEventHandler>),
+                  })
+                : child
+            )
+          : children}
       </StateStylesComponent>
     );
 
