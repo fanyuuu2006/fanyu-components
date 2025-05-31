@@ -1,40 +1,37 @@
-import React, { useRef, useState } from "react";
-import ReactDOM from "react-dom";
-import { flexAlignMap } from "../utils/flex";
-import {
-  ModalContainerProps,
-  onEventHandler,
-  onEventHandlerKey,
-  onEventHandlerKeys,
-} from "../types";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { ModalContainerProps } from "../types";
 
 export const useModal = () => {
   const [isShow, setIsShow] = useState(false);
   const containRef = useRef<HTMLDialogElement>(null);
 
-  const Open = () => {
-    if (!isShow) {
-      containRef.current?.showModal();
-      setIsShow(true);
-    }
-  };
+  const Open = useCallback(() => {
+    containRef.current?.showModal();
+    setIsShow(true);
+  }, []);
 
-  const Close = () => {
-    if (isShow) {
-      containRef.current?.close();
-      setIsShow(false);
-    }
-  };
+  const Close = useCallback(() => {
+    containRef.current?.close();
+    setIsShow(false);
+  }, []);
 
-  const Toggle = () => {
+  const Toggle = useCallback(() => {
     isShow ? Close() : Open();
-  };
+  }, [isShow, Open, Close]);
 
-  const Container = (props: ModalContainerProps) => {
-    if (!isShow) return null;
+  useEffect(() => {
+    const el = containRef.current;
+    if (!el) return;
 
+    const handler = () => setIsShow(false);
+    el.addEventListener("close", handler);
+    return () => el.removeEventListener("close", handler);
+  }, []);
+
+  const Container: React.FC<ModalContainerProps> = (
+    props: ModalContainerProps
+  ) => {
     const { contentClickClose, children, style, ...rest } = props;
-
     return (
       <dialog
         ref={containRef}
