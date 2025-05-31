@@ -10,7 +10,6 @@ export const Collapse = <Component extends React.ElementType>({
 }: CollapseProps<Component>) => {
   const Tag = as ?? "div";
   const innerRef = useRef<HTMLDivElement>(null);
-  const rendered = useRef<boolean>(false);
 
   useEffect(() => {
     const el = innerRef.current;
@@ -32,7 +31,6 @@ export const Collapse = <Component extends React.ElementType>({
       void el.offsetHeight;
       el.style.height = "0px";
     }
-    rendered.current = true;
 
     return () => {
       el.removeEventListener("transitionend", onTransitionEnd);
@@ -44,7 +42,6 @@ export const Collapse = <Component extends React.ElementType>({
       ref={innerRef}
       style={{
         overflow: "hidden",
-        ...(!rendered.current ? { height: "0px" } : {}),
         ...style,
       }}
       {...rest}
