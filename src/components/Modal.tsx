@@ -1,20 +1,40 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ModalContainerProps } from "../types";
 
 export const useModal = () => {
   const [isShow, setIsShow] = useState(false);
   const containRef = useRef<HTMLDialogElement>(null);
 
-  const Toggle = () => setIsShow((prev) => !prev);
-  const Open = () => setIsShow(true);
-  const Close = () => setIsShow(false);
+  const Open = useCallback(() => {
+    setIsShow(true);
+  }, []);
+
+  const Close = useCallback(() => {
+    setIsShow(false);
+  }, []);
+
+  const Toggle = useCallback(() => {
+    isShow ? Close() : Open();
+  }, [isShow, Open, Close]);
 
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") Close();
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
+    const dialog = containRef.current;
+    if (!dialog) return;
+
+    if (isShow && !dialog.open) {
+      dialog.showModal();
+    } else if (!isShow && dialog.open) {
+      dialog.close();
+    }
+  }, [isShow]);
+
+  useEffect(() => {
+    const el = containRef.current;
+    if (!el) return;
+
+    const handler = () => setIsShow(false);
+    el.addEventListener("close", handler);
+    return () => el.removeEventListener("close", handler);
   }, []);
 
   const Container: React.FC<ModalContainerProps> = (
@@ -24,10 +44,10 @@ export const useModal = () => {
     return (
       <dialog
         ref={containRef}
-        open={isShow}
         onClick={(e) => {
-          const isBackdrop = e.target === containRef.current;
-          if (contentClickClose || isBackdrop) Close();
+          if (contentClickClose || e.target === containRef.current) {
+            Close();
+          }
         }}
         {...rest}
       >
