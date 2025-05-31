@@ -10,32 +10,30 @@ export const Collapse = <Component extends React.ElementType>({
 }: CollapseProps<Component>) => {
   const Tag = as ?? "div";
   const innerRef = useRef<HTMLDivElement>(null);
-  const [maxHeight, setMaxHeight] =
-    useState<React.CSSProperties["maxHeight"]>("0px");
 
   useEffect(() => {
     const el = innerRef.current;
     if (!el) return;
 
-    const updateHeight = () => {
-      if (show) {
-        setMaxHeight(`${el.scrollHeight}px`);
-      } else {
-        setMaxHeight("0px");
+    const onTransitionEnd = (e: TransitionEvent) => {
+      if (e.propertyName === "height" && show) {
+        el.style.height = "auto"; // 展開後移除固定高度
       }
     };
 
-    // 初次執行
-    updateHeight();
+    el.addEventListener("transitionend", onTransitionEnd);
 
-    // 監聽內容變化
-    const resizeObserver = new ResizeObserver(() => {
-      updateHeight();
-    });
-    resizeObserver.observe(el);
+    if (show) {
+      el.style.height = `${el.scrollHeight}px`;
+    } else {
+      el.style.height = `${el.scrollHeight}px`;
+      // 強制重繪，讓上面設定生效
+      void el.offsetHeight;
+      el.style.height = "0px";
+    }
 
     return () => {
-      resizeObserver.disconnect();
+      el.removeEventListener("transitionend", onTransitionEnd);
     };
   }, [show]);
 
@@ -44,7 +42,6 @@ export const Collapse = <Component extends React.ElementType>({
       ref={innerRef}
       style={{
         overflow: "hidden",
-        maxHeight,
         ...style,
       }}
       {...rest}
