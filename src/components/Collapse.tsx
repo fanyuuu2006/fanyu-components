@@ -10,6 +10,7 @@ export const Collapse = <Component extends React.ElementType>({
 }: CollapseProps<Component>) => {
   const Tag = as ?? "div";
   const innerRef = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState<React.CSSProperties["height"]>("0px");
 
   useEffect(() => {
     const el = innerRef.current;
@@ -17,19 +18,19 @@ export const Collapse = <Component extends React.ElementType>({
 
     const onTransitionEnd = (e: TransitionEvent) => {
       if (e.propertyName === "height" && show) {
-        el.style.height = "auto"; // 展開後移除固定高度
+        setHeight("auto"); // 展開後移除固定高度
       }
     };
 
     el.addEventListener("transitionend", onTransitionEnd);
 
     if (show) {
-      el.style.height = `${el.scrollHeight}px`;
+      setHeight(`${el.scrollHeight}px`);
     } else {
-      el.style.height = `${el.scrollHeight}px`;
+      setHeight(`${el.scrollHeight}px`);
       // 強制重繪，讓上面設定生效
       void el.offsetHeight;
-      el.style.height = "0px";
+      setHeight(`0px`);
     }
 
     return () => {
@@ -42,6 +43,7 @@ export const Collapse = <Component extends React.ElementType>({
       ref={innerRef}
       style={{
         overflow: "hidden",
+        height,
         ...style,
       }}
       {...rest}
