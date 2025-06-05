@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { CollapseProps } from "../types";
 
 export const Collapse = <Component extends React.ElementType>({
@@ -10,8 +10,9 @@ export const Collapse = <Component extends React.ElementType>({
 }: CollapseProps<Component>) => {
   const Tag = as ?? "div";
   const innerRef = useRef<HTMLDivElement>(null);
+  const [collapsed, setCollapsed] = useState<boolean>(show);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const el = innerRef.current;
     if (!el) return;
 
@@ -24,6 +25,10 @@ export const Collapse = <Component extends React.ElementType>({
     el.addEventListener("transitionend", onTransitionEnd);
 
     if (show) {
+      setCollapsed(true);
+      el.style.height = "0px";
+      // 強制重繪，讓上面設定生效
+      void el.offsetHeight;
       el.style.height = `${el.scrollHeight}px`;
     } else {
       el.style.height = `${el.scrollHeight}px`;
@@ -42,6 +47,7 @@ export const Collapse = <Component extends React.ElementType>({
       ref={innerRef}
       style={{
         overflow: "hidden",
+        maxHeight: !collapsed && !show ? "0px" : undefined,
         ...style,
       }}
       {...rest}

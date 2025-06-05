@@ -1,6 +1,7 @@
 {
+  "$schema": "https://json.schemastore.org/package.json",
   "name": "fanyucomponents",
-  "version": "2.10.2",
+  "version": "2.10.4",
   "description": "一款以 純邏輯為核心、無樣式綁定 的 React 元件套件",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
