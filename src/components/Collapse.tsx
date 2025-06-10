@@ -11,18 +11,43 @@ export const Collapse = <Component extends React.ElementType>({
   const Tag = as ?? "div";
   const innerRef = useRef<HTMLDivElement>(null);
   const [collapsed, setCollapsed] = useState<boolean>(show);
+  const transitionTimerRef = useRef<number>(null);
+  const resizeObserverRef = useRef<ResizeObserver>(null);
 
   useLayoutEffect(() => {
     const el = innerRef.current;
     if (!el) return;
 
-    const onTransitionEnd = (e: TransitionEvent) => {
-      if (e.propertyName === "height" && show) {
-        el.style.height = "auto"; // 展開後移除固定高度
+    // 清理函数
+    const cleanup = () => {
+      if (transitionTimerRef.current) {
+        clearTimeout(transitionTimerRef.current);
+      }
+      if (resizeObserverRef.current) {
+        resizeObserverRef.current.disconnect();
       }
     };
 
-    el.addEventListener("transitionend", onTransitionEnd);
+    // 處理過度結束
+    const onTransitionEnd = (e: TransitionEvent) => {
+      if (e.propertyName === "height" && show) {
+        el.style.height = "auto";
+        // 添加防抖重置以防内容变化
+        resizeObserverRef.current = new ResizeObserver(() => {
+          el.style.height = "auto";
+        });
+        resizeObserverRef.current.observe(el);
+      }
+    };
+
+    // 備用（防止 transitionend 未觸發）
+    const startFallbackTimer = () => {
+      transitionTimerRef.current = setTimeout(() => {
+        if (show) {
+          el.style.height = "auto";
+        }
+      }, parseInt(el.style.transitionDuration || "500")); // 匹配 CSS 过渡时间
+    };
 
     if (show) {
       setCollapsed(true);
@@ -37,11 +62,14 @@ export const Collapse = <Component extends React.ElementType>({
       el.style.height = "0px";
     }
 
+    el.addEventListener("transitionend", onTransitionEnd);
+    startFallbackTimer();
+
     return () => {
+      cleanup();
       el.removeEventListener("transitionend", onTransitionEnd);
     };
   }, [show]);
-
   return (
     <Tag
       ref={innerRef}

@@ -13,7 +13,7 @@ export type AsComponentProps<
   Component extends React.ElementType,
   PermanentProps extends object = {}
 > = OverrideProps<
-  React.ComponentPropsWithRef<Component>,
+  React.ComponentProps<Component>,
   {
     /** 指定用於渲染的 React 元件（可為任意元件*/
     as?: Component;
