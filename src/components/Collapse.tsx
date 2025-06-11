@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { CollapseProps } from "../types";
 
-export const Collapse = <Component extends React.ElementType>({
+export const Collapse = <Component extends React.ElementType = "div">({
   as,
   state: show,
   style,
@@ -46,7 +46,7 @@ export const Collapse = <Component extends React.ElementType>({
         if (show) {
           el.style.height = "auto";
         }
-      }, parseInt(el.style.transitionDuration || "500")); // 匹配 CSS 过渡时间
+      }, parseInt(getComputedStyle(el).transitionDuration || "500")); // 匹配 CSS 过渡时间
     };
 
     if (show) {
