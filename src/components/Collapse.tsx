@@ -30,13 +30,11 @@ export const Collapse = <Component extends React.ElementType>({
 
     // 處理過度結束
     const onTransitionEnd = (e: TransitionEvent) => {
-      if ((e.propertyName === "height" || e.propertyName === "width") && show) {
+      if (e.propertyName === "height" && show) {
         el.style.height = "auto";
-        el.style.width = "auto";
         // 添加防抖重置以防内容变化
         resizeObserverRef.current = new ResizeObserver(() => {
           el.style.height = "auto";
-          el.style.width = "auto";
         });
         resizeObserverRef.current.observe(el);
       }
@@ -47,7 +45,6 @@ export const Collapse = <Component extends React.ElementType>({
       transitionTimerRef.current = setTimeout(() => {
         if (show) {
           el.style.height = "auto";
-          el.style.width = "auto";
         }
       }, parseInt(el.style.transitionDuration || "500")); // 匹配 CSS 过渡时间
     };
@@ -55,18 +52,14 @@ export const Collapse = <Component extends React.ElementType>({
     if (show) {
       setCollapsed(true);
       el.style.height = "0px";
-      el.style.width = "0px";
       // 強制重繪，讓上面設定生效
       void el.offsetHeight;
       el.style.height = `${el.scrollHeight}px`;
-      el.style.width = `${el.scrollWidth}px`;
     } else {
       el.style.height = `${el.scrollHeight}px`;
-      el.style.width = `${el.scrollWidth}px`;
       // 強制重繪，讓上面設定生效
       void el.offsetHeight;
       el.style.height = "0px";
-      el.style.width = "0px";
     }
 
     el.addEventListener("transitionend", onTransitionEnd);
@@ -83,7 +76,6 @@ export const Collapse = <Component extends React.ElementType>({
       style={{
         overflow: "hidden",
         maxHeight: !collapsed && !show ? "0px" : undefined,
-        maxWidth: !collapsed && !show ? "0px" : undefined,
         ...style,
       }}
       {...rest}
