@@ -30,11 +30,13 @@ export const Collapse = <Component extends React.ElementType>({
 
     // 處理過度結束
     const onTransitionEnd = (e: TransitionEvent) => {
-      if (e.propertyName === "height" && show) {
+      if ((e.propertyName === "height" || e.propertyName === "width") && show) {
         el.style.height = "auto";
+        el.style.width = "auto";
         // 添加防抖重置以防内容变化
         resizeObserverRef.current = new ResizeObserver(() => {
           el.style.height = "auto";
+          el.style.width = "auto";
         });
         resizeObserverRef.current.observe(el);
       }
