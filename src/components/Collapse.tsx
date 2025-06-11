@@ -46,7 +46,7 @@ export const Collapse = <Component extends React.ElementType = "div">({
         if (show) {
           el.style.height = "auto";
         }
-      }, parseInt(getComputedStyle(el).transitionDuration || "500")); // 匹配 CSS 过渡时间
+      }, parseInt(el.style.transitionDuration || "500")); // 匹配 CSS 过渡时间
     };
 
     if (show) {
