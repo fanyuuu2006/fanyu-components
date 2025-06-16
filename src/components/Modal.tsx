@@ -9,8 +9,8 @@ import {
 } from "../types";
 import { StateStylesComponent } from "./StateStylesComponent";
 
-export const useModal = () => {
-  const [isShow, setIsShow] = useState<boolean>(false);
+export const useModal = (initOption: { isShow?: boolean }) => {
+  const [isShow, setIsShow] = useState<boolean>(initOption?.isShow ?? false);
 
   const Toggle = () => setIsShow((prev) => !prev);
   const Open = () => setIsShow(true);
